@@ -3,7 +3,6 @@ package io.github.ricky.cg.utils;
 import io.github.ricky.cg.constants.MathConstants;
 import io.github.ricky.cg.model.Point;
 import io.github.ricky.cg.model.Segment;
-import io.github.ricky.cg.utils.ComputationalGeometryUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,7 +120,7 @@ class ComputationalGeometryUtilsTest {
     @Test
     public void relation() {
         // Given
-        Point c1 = new Point(1,2);
+        Point c1 = new Point(1, 2);
         Point c2 = new Point(6, 2);
         Point c3 = new Point(-1, 2);
         Point c4 = Point.ORIGINAL_POINT;
@@ -216,6 +215,112 @@ class ComputationalGeometryUtilsTest {
         // Then
         System.out.println(distance);
         assertThat(distance).isEqualTo(sqrt3);
+    }
+
+    @Test
+    public void segmentAngle() {
+        // Given
+        double piInThree = MathConstants.PI / 3;
+
+        Segment u = new Segment(new Point(1, 0), new Point(7, 0));
+        Segment v = new Segment(Point.ORIGINAL_POINT, new Point(3, 3 * Math.sqrt(3)));
+
+        // When
+        double angle = ComputationalGeometryUtils.segmentAngle(u, v);
+
+        // Then
+        System.out.println(angle);
+        assertThat(angle).isBetween(piInThree - MathConstants.EPS, piInThree + MathConstants.EPS);
+    }
+
+    @Test
+    public void isIntersect() {
+        // Given
+        double onePointFiveSqrt3 = 1.5 * Math.sqrt(3);
+
+        Segment u = new Segment(new Point(1, 0), new Point(7, 0));
+        Segment v1 = new Segment(new Point(-1.5, -onePointFiveSqrt3), new Point(1.5, onePointFiveSqrt3));
+        Segment v2 = new Segment(new Point(-0.5, -onePointFiveSqrt3), new Point(2.5, onePointFiveSqrt3));
+        Segment v3 = new Segment(new Point(2.5, -onePointFiveSqrt3), new Point(5.5, onePointFiveSqrt3));
+        Segment v4 = new Segment(new Point(5.5, -onePointFiveSqrt3), new Point(8.5, onePointFiveSqrt3));
+        Segment v5 = new Segment(new Point(6.5, -onePointFiveSqrt3), new Point(9.5, onePointFiveSqrt3));
+
+        // When
+        boolean res1 = ComputationalGeometryUtils.isIntersect(u, v1);
+        boolean res2 = ComputationalGeometryUtils.isIntersect(u, v2);
+        boolean res3 = ComputationalGeometryUtils.isIntersect(u, v3);
+        boolean res4 = ComputationalGeometryUtils.isIntersect(u, v4);
+        boolean res5 = ComputationalGeometryUtils.isIntersect(u, v5);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        System.out.println(res3);
+        System.out.println(res4);
+        System.out.println(res5);
+        assertThat(res1).isFalse();
+        assertThat(res2).isTrue();
+        assertThat(res3).isTrue();
+        assertThat(res4).isTrue();
+        assertThat(res5).isFalse();
+    }
+
+    @Test
+    public void isIntersectA() {
+        // Given
+        double onePointFiveSqrt3 = 1.5 * Math.sqrt(3);
+
+        Segment u = new Segment(new Point(1, 0), new Point(7, 0));
+        Segment v1 = new Segment(new Point(-1.5, -onePointFiveSqrt3), new Point(1.5, onePointFiveSqrt3));
+        Segment v2 = new Segment(new Point(-0.5, -onePointFiveSqrt3), new Point(2.5, onePointFiveSqrt3));
+        Segment v3 = new Segment(new Point(2.5, -onePointFiveSqrt3), new Point(5.5, onePointFiveSqrt3));
+        Segment v4 = new Segment(new Point(5.5, -onePointFiveSqrt3), new Point(8.5, onePointFiveSqrt3));
+        Segment v5 = new Segment(new Point(6.5, -onePointFiveSqrt3), new Point(9.5, onePointFiveSqrt3));
+
+        // When
+        boolean res1 = ComputationalGeometryUtils.isIntersectA(u, v1);
+        boolean res2 = ComputationalGeometryUtils.isIntersectA(u, v2);
+        boolean res3 = ComputationalGeometryUtils.isIntersectA(u, v3);
+        boolean res4 = ComputationalGeometryUtils.isIntersectA(u, v4);
+        boolean res5 = ComputationalGeometryUtils.isIntersectA(u, v5);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        System.out.println(res3);
+        System.out.println(res4);
+        System.out.println(res5);
+        assertThat(res1).isFalse();
+        assertThat(res2).isFalse();
+        assertThat(res3).isTrue();
+        assertThat(res4).isFalse();
+        assertThat(res5).isFalse();
+    }
+
+    @Test
+    public void isIntersectL() {
+        // Given
+        Segment u = new Segment(new Point(0, 0), new Point(4, 4));
+        Segment v1 = new Segment(new Point(1, 1), new Point(3, 3)); // 应相交
+        Segment v2 = new Segment(new Point(6, 5), new Point(7, 5)); // 不相交
+        Segment v3 = new Segment(new Point(2, 2), new Point(4, 4)); // 共线且重叠
+        Segment v4 = new Segment(new Point(4, 4), new Point(6, 6)); // 共点且重叠
+
+        // When
+        boolean res1 = ComputationalGeometryUtils.isIntersectL(u, v1);
+        boolean res2 = ComputationalGeometryUtils.isIntersectL(u, v2);
+        boolean res3 = ComputationalGeometryUtils.isIntersectL(u, v3);
+        boolean res4 = ComputationalGeometryUtils.isIntersectL(u, v4);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        System.out.println(res3);
+        System.out.println(res4);
+        assertThat(res1).isTrue();
+        assertThat(res2).isFalse();
+        assertThat(res3).isTrue();
+        assertThat(res4).isTrue();
     }
 
 }

@@ -1,5 +1,7 @@
 package io.github.ricky.cg.model;
 
+import io.github.ricky.cg.utils.DoubleUtils;
+
 /**
  * @author Ricky
  * @version 1.0
@@ -153,6 +155,20 @@ public class Vector2 extends Point implements Vector {
     @Override
     public double modulo() {
         return Math.sqrt(sqrModulo());
+    }
+
+    /**
+     * 计算两向量夹角余弦
+     * @param v 向量
+     * @return 计算 cos(this, v)
+     */
+    @Override
+    public double cosine(Vector v) {
+        double m = modulo() * v.modulo();
+        if(DoubleUtils.sgn(m) == 0) {
+            return 0.0;
+        }
+        return this.dot(v) / m;
     }
 
 }

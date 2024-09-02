@@ -146,4 +146,23 @@ public interface Vector {
      */
     double modulo();
 
+    /**
+     * 计算两向量夹角余弦
+     *
+     * @param v 向量
+     * @return 计算 cos this, v
+     */
+    double cosine(Vector v);
+
+    /**
+     * 计算两向量夹角余弦
+     *
+     * @param v1 第一个向量
+     * @param v2 第二个向量
+     * @return 计算 cos v1, v2
+     */
+    static double cosine(Vector v1, Vector v2) {
+        return v1.cosine(v2);
+    }
+
 }

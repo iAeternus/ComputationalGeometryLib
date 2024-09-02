@@ -1,5 +1,6 @@
 package io.github.ricky.cg.model;
 
+import io.github.ricky.cg.constants.MathConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,6 +104,20 @@ class Vector2Test {
         // Then
         System.out.println(modulo);
         assertThat(modulo).isEqualTo(Math.sqrt(2));
+    }
+
+    @Test
+    public void cosine() {
+        // Given
+        Vector v1 = new Vector2(6, 0);
+        Vector v2 = new Vector2(3, 3 * Math.sqrt(3));
+
+        // When
+        double cosine = Vector.cosine(v1, v2);
+
+        // THen
+        System.out.println(cosine);
+        assertThat(cosine).isEqualTo(0.5);
     }
 
 }

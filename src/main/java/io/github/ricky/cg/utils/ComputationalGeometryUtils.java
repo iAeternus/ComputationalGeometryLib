@@ -39,11 +39,11 @@ public class ComputationalGeometryUtils {
      * @param o  共用点
      * @param p1 向量op1的终点
      * @param p2 向量op2的终点
-     * @return 两个向量op1和op2的叉积
-     * 特别的，令返回值为 r
-     * r > 0: p1 在矢量op2的顺时针方向；
-     * r = 0: o p1 p2 三点共线；
-     * r < 0: p1 在矢量op2的逆时针方向
+     * @return 两个向量op1和op2的叉积<br>
+     * 特别的，令返回值为 r<br>
+     * r > 0: p1 在矢量op2的顺时针方向；<br>
+     * r = 0: o p1 p2 三点共线；<br>
+     * r < 0: p1 在矢量op2的逆时针方向<br>
      */
     public static double cross(Point o, Point p1, Point p2) {
         Vector op1 = new Vector2(o, p1);
@@ -214,6 +214,73 @@ public class ComputationalGeometryUtils {
      */
     public static double pointToLineDistance(Point p, Segment l) {
         return Math.abs(cross(l.getBegin(), p, l.getEnd())) / l.length();
+    }
+
+    /**
+     * 求线段l1与l2之间的夹角
+     *
+     * @param u 第一条线段
+     * @param v 第二条线段
+     * @return 线段l1与l2之间的夹角，单位：弧度 范围(-PI，PI)
+     */
+    public static double segmentAngle(Segment u, Segment v) {
+        Point o = Point.ORIGINAL_POINT;
+        Point p1 = new Point(u.getEnd().getX() - u.getBegin().getX(), u.getEnd().getY() - u.getBegin().getY());
+        Point p2 = new Point(v.getEnd().getX() - v.getBegin().getX(), v.getEnd().getY() - v.getBegin().getY());
+        return angle(o, p1, p2);
+    }
+
+    /**
+     * 判断线段u和v相交(包括相交在端点处)
+     *
+     * @param u 第一条线段
+     * @param v 第二条线段
+     * @return true=相交 false=不相交
+     */
+    public static boolean isIntersect(Segment u, Segment v) {
+        // 排斥实验
+        if (Math.max(u.getBegin().getX(), u.getEnd().getX()) < Math.min(v.getBegin().getX(), v.getEnd().getX()) ||
+                Math.min(u.getBegin().getX(), u.getEnd().getX()) > Math.max(v.getBegin().getX(), v.getEnd().getX()) ||
+                Math.max(u.getBegin().getY(), u.getEnd().getY()) < Math.min(v.getBegin().getY(), v.getEnd().getY()) ||
+                Math.min(u.getBegin().getY(), u.getEnd().getY()) > Math.max(v.getBegin().getY(), v.getEnd().getY())) {
+            return false;
+        }
+
+        // 跨立实验
+        double d1 = cross(u.getBegin(), u.getEnd(), v.getBegin());
+        double d2 = cross(u.getBegin(), u.getEnd(), v.getEnd());
+        double d3 = cross(v.getBegin(), v.getEnd(), u.getBegin());
+        double d4 = cross(v.getBegin(), v.getEnd(), u.getEnd());
+
+        // 如果d1和d2异号，且d3和d4也异号，则两线段相交
+        return (d1 * d2 <= 0 && d3 * d4 <= 0);
+    }
+
+    /**
+     * 判断线段u和v相交（不包括双方的端点）
+     *
+     * @param u 第一条线段
+     * @param v 第二条线段
+     * @return true=相交 false=不相交
+     */
+    public static boolean isIntersectA(Segment u, Segment v) {
+        return isIntersect(u, v) &&
+                !online(u, v.getBegin()) &&
+                !online(u, v.getEnd()) &&
+                !online(v, u.getBegin()) &&
+                !online(v, u.getEnd());
+    }
+
+    /**
+     * 判断线段u所在直线与线段v相交
+     * 方法：判断线段v是否跨立线段u
+     *
+     * @param u 第一条线段
+     * @param v 第二条线段
+     * @return true=相交 false=不相交
+     */
+    public static boolean isIntersectL(Segment u, Segment v) {
+        return cross(u.getBegin(), u.getEnd(), v.getBegin()) * cross(u.getBegin(), u.getEnd(), v.getEnd()) <= 0;
     }
 
 }
