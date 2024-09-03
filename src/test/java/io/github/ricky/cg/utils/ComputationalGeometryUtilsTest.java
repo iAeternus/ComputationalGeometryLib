@@ -9,6 +9,9 @@ import io.github.ricky.cg.model.enums.PositionalRelationshipEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -379,7 +382,7 @@ class ComputationalGeometryUtilsTest {
         assertThat(res2).isNull();
     }
 
-    static Polygon polygon = new Polygon(new Point[] {
+    static Polygon polygon = new Polygon(new Point[]{
             Point.ORIGINAL_POINT,
             new Point(1, 0),
             new Point(1, 1),
@@ -434,6 +437,32 @@ class ComputationalGeometryUtilsTest {
         assertThat(res2).isTrue();
         assertThat(res3).isTrue();
         assertThat(res4).isTrue();
+    }
+
+    @Test
+    public void findingConvexHulls() {
+        // Given
+        Point[] pointSet = {
+                new Point(0, 0),
+                new Point(2, 0),
+                new Point(2, 2),
+                new Point(0, 2),
+                new Point(1, 1),
+                new Point(0.5, 0.5),
+        };
+
+        // When
+        Point[] hull = ComputationalGeometryUtils.findingConvexHulls(pointSet);
+
+        // Then
+        assert hull != null;
+        Stream.of(hull).forEach(System.out::println);
+        assertThat(hull).isEqualTo(new Point[] {
+                new Point(0, 0),
+                new Point(2, 0),
+                new Point(2, 2),
+                new Point(0, 2),
+        });
     }
 
 }

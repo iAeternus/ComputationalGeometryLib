@@ -4,9 +4,6 @@ import io.github.ricky.cg.constants.MathConstants;
 import io.github.ricky.cg.model.*;
 import io.github.ricky.cg.model.enums.PositionalRelationshipEnum;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Ricky
  * @version 1.0
@@ -411,49 +408,59 @@ public class ComputationalGeometryUtils {
      * @param pointSet 点集
      * @return 返回凸包上的点集，按逆时针方向排列
      */
-    public static List<Point> findingConvexHulls(List<Point> pointSet) {
-        if (pointSet == null || pointSet.size() < 3) {
-            return pointSet; // 凸包可以是整个点集，如果它小于3个点
+    public static Point[] findingConvexHulls(Point[] pointSet) {
+        int n = pointSet.length;
+        if (n < 3) {
+            return null; // 凸包至少需要3个点
         }
 
-        // 找到y坐标最小的点，如果y相同则选择x最小的点
-        Point p0 = pointSet.get(0);
-        for (Point p : pointSet) {
-            if (p.getY() < p0.getY() || (p.getY() == p0.getY() && p.getX() < p0.getX())) {
-                p0 = p;
+        // 找到y坐标最小的点，如果y坐标相同，则取x坐标最小的点
+        int k = 0;
+        for (int i = 1; i < n; i++) {
+            if (pointSet[i].getY() < pointSet[k].getY() || (pointSet[i].getY() == pointSet[k].getY() && pointSet[i].getX() < pointSet[k].getX())) {
+                k = i;
             }
         }
 
-        // 排序剩余的点
-        List<Point> sortedPoints = new ArrayList<>(pointSet);
-        sortedPoints.remove(p0);
-        Point finalP = p0;
-        sortedPoints.sort((o1, o2) -> {
-            double cp = cross(finalP, o1, o2);
-            int sign = DoubleUtils.sgn(cp);
-            if (sign != 0) {
-                return sign;
+        // 将最小点交换到数组的第一个位置
+        Point tmp = pointSet[0];
+        pointSet[0] = pointSet[k];
+        pointSet[k] = tmp;
+
+        // 根据与p0的极角排序，这里使用稳定的冒泡排序
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (cross(pointSet[0], pointSet[j], pointSet[i]) > 0 || (cross(pointSet[0], pointSet[j], pointSet[i]) == 0 &&
+                        distance(pointSet[0], pointSet[j]) < distance(pointSet[0], pointSet[i]))) {
+                    tmp = pointSet[i];
+                    pointSet[i] = pointSet[j];
+                    pointSet[j] = tmp;
+                }
             }
-            return Double.compare(distance(finalP, o1), distance(finalP, o2));
-        });
-
-        // 将起点加回到列表的开始
-        sortedPoints.add(0, p0);
-
-        // Graham扫描法构建凸包
-        List<Point> hull = new ArrayList<>();
-        hull.add(p0);
-        hull.add(sortedPoints.get(1));
-
-        for (int i = 2; i < sortedPoints.size(); i++) {
-            Point p = sortedPoints.get(i);
-            while (hull.size() >= 2 && cross(hull.get(hull.size() - 2), hull.get(hull.size() - 1), p) <= 0) {
-                hull.remove(hull.size() - 1);
-            }
-            hull.add(p);
         }
-        return hull;
+
+        // 构建凸包，这里使用数组模拟栈
+        Point[] hull = new Point[n];
+        int top = 2;
+        hull[0] = pointSet[0];
+        hull[1] = pointSet[1];
+        hull[2] = pointSet[2];
+
+        for (int i = 3; i < n; i++) {
+            while (top >= 2 && cross(pointSet[i], hull[top], hull[top - 1]) >= 0) {
+                top--;
+            }
+            hull[++top] = pointSet[i];
+        }
+
+        // 裁剪hull数组
+        Point[] result = new Point[top + 1];
+        System.arraycopy(hull, 0, result, 0, top + 1);
+
+        return result;
     }
+
+
 
 }
 

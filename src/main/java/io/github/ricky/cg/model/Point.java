@@ -1,7 +1,9 @@
 package io.github.ricky.cg.model;
 
+import io.github.ricky.cg.utils.ComputationalGeometryUtils;
 import io.github.ricky.cg.utils.DoubleUtils;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -47,6 +49,28 @@ public final class Point {
 
     public static Point updatePosition(double x, double y) {
         return newInstance(x, y);
+    }
+
+    /**
+     * 坐标点的比较，用于graham扫描法寻找凸包
+     */
+    public static class PointComparator implements Comparator<Point> {
+
+        private final Point point;
+
+        public PointComparator(Point point) {
+            this.point = point;
+        }
+
+        @Override
+        public int compare(Point o1, Point o2) {
+            double cp = ComputationalGeometryUtils.cross(point, o1, o2);
+            int sign = DoubleUtils.sgn(cp);
+            if (sign != 0) {
+                return sign;
+            }
+            return Double.compare(ComputationalGeometryUtils.distance(point, o1), ComputationalGeometryUtils.distance(point, o2));
+        }
     }
 
     @Override
