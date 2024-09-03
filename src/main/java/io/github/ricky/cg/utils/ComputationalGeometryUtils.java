@@ -459,8 +459,5 @@ public class ComputationalGeometryUtils {
 
         return result;
     }
-
-
-
 }
 

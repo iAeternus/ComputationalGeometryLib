@@ -47,6 +47,7 @@ public class Segment {
 
     /**
      * 计算线段长度平方
+     *
      * @return 线段长度平方
      */
     public double sqrLength() {
@@ -57,6 +58,7 @@ public class Segment {
 
     /**
      * 计算线段长度
+     *
      * @return 返回线段长度
      */
     public double length() {

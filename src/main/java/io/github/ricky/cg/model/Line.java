@@ -65,6 +65,7 @@ public final class Line {
 
     /**
      * 使用线段构造直线
+     *
      * @param segment 线段
      */
     public Line(Segment segment) {

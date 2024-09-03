@@ -11,6 +11,7 @@ public enum ShapeTypeEnum {
 
     CIRCLE,
     POLYGON,
+    TRIANGLE,
     ;
 
 }

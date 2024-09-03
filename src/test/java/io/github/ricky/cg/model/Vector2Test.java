@@ -1,6 +1,5 @@
 package io.github.ricky.cg.model;
 
-import io.github.ricky.cg.constants.MathConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

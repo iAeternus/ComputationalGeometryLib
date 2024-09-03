@@ -16,6 +16,7 @@ public class DoubleUtils {
 
     /**
      * 比较两个浮点数
+     *
      * @param num1 第一个浮点数
      * @param num2 第二个浮点数
      * @return 若两个浮点数在误差阈值内相等，返回0.0
@@ -36,7 +37,7 @@ public class DoubleUtils {
      * 若x > 0，返回1表示正数
      */
     public static int sgn(double number) {
-        if(cmp(number, 0) == 0.0) {
+        if (cmp(number, 0) == 0.0) {
             return 0;
         }
         return number < 0 ? -1 : 1;
