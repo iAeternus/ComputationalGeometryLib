@@ -11,22 +11,22 @@ import java.util.Objects;
  * @className Point
  * @desc 坐标点
  */
-public class Point {
+public final class Point {
 
     /**
      * 横坐标
      */
-    protected double x;
+    private final double x;
 
     /**
      * 纵坐标
      */
-    protected double y;
+    private final double y;
 
     /**
      * 原点
      */
-    public static final Point ORIGINAL_POINT = new Point(0, 0);
+    public static final Point ORIGINAL_POINT = new Point(0.0, 0.0);
 
     public Point(double x, double y) {
         this.x = DoubleUtils.zeroIfNearZero(x);
@@ -37,16 +37,16 @@ public class Point {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public static Point newInstance(double x, double y) {
+        return new Point(x, y);
+    }
+
+    public static Point updatePosition(double x, double y) {
+        return newInstance(x, y);
     }
 
     @Override

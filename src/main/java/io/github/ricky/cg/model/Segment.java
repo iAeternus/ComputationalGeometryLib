@@ -50,8 +50,8 @@ public class Segment {
      * @return 线段长度平方
      */
     public double sqrLength() {
-        double dx = begin.x - end.x;
-        double dy = begin.y - end.y;
+        double dx = begin.getX() - end.getX();
+        double dy = begin.getY() - end.getY();
         return dx * dx + dy * dy;
     }
 

@@ -11,23 +11,22 @@ import io.github.ricky.cg.utils.ComputationalGeometryUtils;
  * @className Polygon
  * @desc 多边形
  */
-public class Polygon implements Shape {
+public final class Polygon implements Shape {
 
     /**
      * 顶点集合，按逆时针排列
      */
-    private Point[] vertexes;
+    private final Point[] vertexes;
 
     public Polygon(Point[] vertexes) {
+        if(vertexes.length == 0) {
+            throw new RuntimeException("The polygon has too few vertices.");
+        }
         this.vertexes = vertexes;
     }
 
     public Point[] getVertexes() {
         return vertexes;
-    }
-
-    public void setVertexes(Point[] vertexes) {
-        this.vertexes = vertexes;
     }
 
     /**
@@ -84,7 +83,7 @@ public class Polygon implements Shape {
     /**
      * 获取多边形上指定边索引的边
      * 边索引规则：从点索引为0的顶点开始逆时针从0递增
-     * @param index 边索引
+     * @param index 边索引，从0开始
      * @return 边
      */
     public Segment getEdge(int index) {
@@ -95,12 +94,15 @@ public class Polygon implements Shape {
         return new Segment(vertexes[index], vertexes[(index + 1) % count]);
     }
 
-    // /**
-    //  * 判断点q与多边形polygon的位置关系
-    //  * @param p 点
-    //  * @return 位置关系
-    //  */
-    // public PositionalRelationshipEnum positionalRelationship(Point p) {
-    //
-    // }
+    /**
+     * 获取多边形上指定点索引的顶点
+     * @param index 点索引，从0开始
+     * @return 顶点
+     */
+    public Point getVertex(int index) {
+        if(index < 0 || index >= count()) {
+            throw new IndexOutOfBoundsException("Incorrect point indexing.");
+        }
+        return vertexes[index];
+    }
 }

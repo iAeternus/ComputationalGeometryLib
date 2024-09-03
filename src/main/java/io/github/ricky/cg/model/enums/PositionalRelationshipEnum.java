@@ -12,7 +12,7 @@ public enum PositionalRelationshipEnum {
     /**
      * 点在多边形内
      */
-    INCLUDE,
+    INSIDE,
 
     /**
      * 点在多边形边上

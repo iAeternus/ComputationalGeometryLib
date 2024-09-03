@@ -15,6 +15,19 @@ public class DoubleUtils {
     }
 
     /**
+     * 比较两个浮点数
+     * @param num1 第一个浮点数
+     * @param num2 第二个浮点数
+     * @return 若两个浮点数在误差阈值内相等，返回0.0
+     * 若num1 < num2，返回负数
+     * 若num1 > num2，返回正数
+     */
+    public static double cmp(double num1, double num2) {
+        double cmp = num1 - num2;
+        return Math.abs(cmp) < MathConstants.EPS ? 0.0 : cmp;
+    }
+
+    /**
      * 判断浮点数的符号
      *
      * @param number 浮点数
@@ -23,7 +36,7 @@ public class DoubleUtils {
      * 若x > 0，返回1表示正数
      */
     public static int sgn(double number) {
-        if (Math.abs(number) < MathConstants.EPS) {
+        if(cmp(number, 0) == 0.0) {
             return 0;
         }
         return number < 0 ? -1 : 1;

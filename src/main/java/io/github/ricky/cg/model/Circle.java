@@ -10,17 +10,17 @@ import io.github.ricky.cg.model.enums.ShapeTypeEnum;
  * @className Circle
  * @desc 圆
  */
-public class Circle implements Shape {
+public final class Circle implements Shape {
 
     /**
      * 圆心
      */
-    private Point center;
+    private final Point center;
 
     /**
      * 半径
      */
-    private double radius;
+    private final double radius;
 
     /**
      * 单位圆
@@ -36,16 +36,8 @@ public class Circle implements Shape {
         return center;
     }
 
-    public void setCenter(Point center) {
-        this.center = center;
-    }
-
     public double getRadius() {
         return radius;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
     }
 
     @Override

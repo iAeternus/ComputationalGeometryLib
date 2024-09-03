@@ -2,6 +2,8 @@ package io.github.ricky.cg.model;
 
 import io.github.ricky.cg.utils.DoubleUtils;
 
+import java.util.Objects;
+
 /**
  * @author Ricky
  * @version 1.0
@@ -9,7 +11,17 @@ import io.github.ricky.cg.utils.DoubleUtils;
  * @className Vector
  * @desc 2维向量
  */
-public class Vector2 extends Point implements Vector {
+public final class Vector2 implements Vector {
+
+    /**
+     * x轴分量
+     */
+    private double x;
+
+    /**
+     * y轴分量
+     */
+    private double y;
 
     /**
      * 零向量
@@ -22,11 +34,21 @@ public class Vector2 extends Point implements Vector {
     public static final Vector2 UNIT = new Vector2(1, 1);
 
     public Vector2(double x, double y) {
-        super(x, y);
+        this.x = x;
+        this.y = y;
     }
 
     public Vector2(Point s, Point t) {
-        super(t.getX() - s.getX(), t.getY() - s.getY());
+        this.x = t.getX() - s.getX();
+        this.y = t.getY() - s.getY();
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 
     /**
@@ -37,7 +59,7 @@ public class Vector2 extends Point implements Vector {
      */
     @Override
     public Vector addAndSet(Vector v) {
-        if(!(v instanceof Vector2 vector2)) {
+        if (!(v instanceof Vector2 vector2)) {
             throw new RuntimeException("The vector dimensions do not match.");
         }
         x += vector2.x;
@@ -47,12 +69,13 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 向量加法
+     *
      * @param v 向量
      * @return 计算 this + v，返回新向量
      */
     @Override
     public Vector add(Vector v) {
-        if(!(v instanceof Vector2 vector2)) {
+        if (!(v instanceof Vector2 vector2)) {
             throw new RuntimeException("The vector dimensions do not match.");
         }
         return new Vector2(this.x + vector2.x, this.y + vector2.y);
@@ -66,7 +89,7 @@ public class Vector2 extends Point implements Vector {
      */
     @Override
     public Vector subtractAndSet(Vector v) {
-        if(!(v instanceof Vector2 vector2)) {
+        if (!(v instanceof Vector2 vector2)) {
             throw new RuntimeException("The vector dimensions do not match.");
         }
         x -= vector2.x;
@@ -76,12 +99,13 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 向量减法
+     *
      * @param v 向量
      * @return 计算 this - v，返回新向量
      */
     @Override
     public Vector subtract(Vector v) {
-        if(!(v instanceof Vector2 vector2)) {
+        if (!(v instanceof Vector2 vector2)) {
             throw new RuntimeException("The vector dimensions do not match.");
         }
         return new Vector2(x - vector2.x, y - vector2.y);
@@ -102,6 +126,7 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 向量数乘
+     *
      * @param n 数
      * @return 计算 this * n，返回新向量
      */
@@ -112,12 +137,13 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 向量点乘
+     *
      * @param v 向量
      * @return 计算 this * v
      */
     @Override
     public double dot(Vector v) {
-        if(!(v instanceof Vector2 vector2)) {
+        if (!(v instanceof Vector2 vector2)) {
             throw new RuntimeException("The vector dimensions do not match.");
         }
         return x * vector2.x + y * vector2.y;
@@ -133,7 +159,7 @@ public class Vector2 extends Point implements Vector {
      */
     @Override
     public double cross(Vector v) {
-        if(!(v instanceof Vector2 vector2)) {
+        if (!(v instanceof Vector2 vector2)) {
             throw new RuntimeException("The vector dimensions do not match.");
         }
         return x * vector2.y - vector2.x * y;
@@ -141,6 +167,7 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 计算向量模长的平方
+     *
      * @return 返回自身的模长平方 |x|^2
      */
     @Override
@@ -150,6 +177,7 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 向量取模
+     *
      * @return 返回自身的模长 |x|
      */
     @Override
@@ -159,16 +187,34 @@ public class Vector2 extends Point implements Vector {
 
     /**
      * 计算两向量夹角余弦
+     *
      * @param v 向量
      * @return 计算 cos(this, v)
      */
     @Override
     public double cosine(Vector v) {
         double m = modulo() * v.modulo();
-        if(DoubleUtils.sgn(m) == 0) {
+        if (DoubleUtils.sgn(m) == 0) {
             return 0.0;
         }
         return this.dot(v) / m;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector2 vector2 = (Vector2) o;
+        return Double.compare(x, vector2.x) == 0 && Double.compare(y, vector2.y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
+    }
 }

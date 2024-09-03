@@ -1,10 +1,11 @@
 package io.github.ricky.cg.utils;
 
 import io.github.ricky.cg.constants.MathConstants;
-import io.github.ricky.cg.model.Point;
-import io.github.ricky.cg.model.Segment;
-import io.github.ricky.cg.model.Vector;
-import io.github.ricky.cg.model.Vector2;
+import io.github.ricky.cg.model.*;
+import io.github.ricky.cg.model.enums.PositionalRelationshipEnum;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Ricky
@@ -21,15 +22,26 @@ public class ComputationalGeometryUtils {
     // 点的基本运算
 
     /**
-     * 计算两点之间欧式距离
+     * 计算两点之间欧氏距离的平方
+     *
+     * @param p1 第一个点
+     * @param p2 第二个点
+     * @return 两点之间欧式距离的平方
+     */
+    public static double sqrDistance(Point p1, Point p2) {
+        Vector2 v = new Vector2(p1, p2);
+        return v.sqrModulo();
+    }
+
+    /**
+     * 计算两点之间欧氏距离
      *
      * @param p1 第一个点
      * @param p2 第二个点
      * @return 两点之间欧式距离
      */
     public static double distance(Point p1, Point p2) {
-        Vector2 v = new Vector2(p1, p2);
-        return v.modulo();
+        return Math.sqrt(sqrDistance(p1, p2));
     }
 
     /**
@@ -253,7 +265,7 @@ public class ComputationalGeometryUtils {
         double d4 = cross(v.getBegin(), v.getEnd(), u.getEnd());
 
         // 如果d1和d2异号，且d3和d4也异号，则两线段相交
-        return (d1 * d2 <= 0 && d3 * d4 <= 0);
+        return d1 * d2 <= 0 && d3 * d4 <= 0;
     }
 
     /**
@@ -263,7 +275,7 @@ public class ComputationalGeometryUtils {
      * @param v 第二条线段
      * @return true=相交 false=不相交
      */
-    public static boolean isIntersectA(Segment u, Segment v) {
+    public static boolean isIntersectExcludingEndpoints(Segment u, Segment v) {
         return isIntersect(u, v) &&
                 !online(u, v.getBegin()) &&
                 !online(u, v.getEnd()) &&
@@ -279,8 +291,169 @@ public class ComputationalGeometryUtils {
      * @param v 第二条线段
      * @return true=相交 false=不相交
      */
-    public static boolean isIntersectL(Segment u, Segment v) {
+    public static boolean isCrossingLine(Segment u, Segment v) {
         return cross(u.getBegin(), u.getEnd(), v.getBegin()) * cross(u.getBegin(), u.getEnd(), v.getEnd()) <= 0;
     }
 
+    /**
+     * 求点 p关于直线l的对称点
+     *
+     * @param l 直线
+     * @param p 点
+     * @return 返回对称点坐标
+     */
+    public static Point symmetry(Line l, Point p) {
+        double a = l.getA();
+        double b = l.getB();
+        double c = l.getC();
+        return new Point(
+                ((b * b - a * a) * p.getX() - 2 * a * b * p.getY() - 2 * a * c) / (a * a + b * b),
+                ((a * a - b * b) * p.getY() - 2 * a * b * p.getX() - 2 * b * c) / (a * a + b * b)
+        );
+    }
+
+    /**
+     * 计算两条直线的交点
+     *
+     * @param l1 第一条直线
+     * @param l2 第二条直线
+     * @return 两条直线相交，返回交点，否则返回null
+     */
+    public static Point lineIntersect(Line l1, Line l2) {
+        return l1.lineIntersect(l2);
+    }
+
+    /**
+     * 计算两条线段的交点
+     *
+     * @param l1 第一条线段
+     * @param l2 第二条线短
+     * @return 两条线段相交，返回交点，否则返回null
+     */
+    public static Point lineIntersect(Segment l1, Segment l2) {
+        Line line1 = new Line(l1);
+        Line line2 = new Line(l2);
+        Point point = lineIntersect(line1, line2);
+        if (point != null && online(l1, point)) {
+            return point;
+        }
+        return null;
+    }
+
+    /**
+     * 判断点q与多边形polygon的位置关系
+     *
+     * @param polygon 多边形
+     * @param q       点
+     * @return 位置关系
+     */
+    public static PositionalRelationshipEnum positionalRelationship(Polygon polygon, Point q) {
+        RadialLine r = new RadialLine(q);
+        int n = polygon.count();
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            Segment l = polygon.getEdge(i);
+            if (online(l, q)) {
+                return PositionalRelationshipEnum.ONLINE;
+            }
+            if (isIntersectExcludingEndpoints(r, l)) {
+                // 相交且不在端点
+                ++cnt;
+            }
+
+            if (online(r, l.getEnd()) && !online(r, l.getBegin()) && l.getEnd().getY() > l.getBegin().getY() ||
+                    !online(r, l.getEnd()) && online(r, l.getBegin()) && l.getBegin().getY() > l.getEnd().getY()) {
+                // l的一个端点在r上且该端点是两端点中纵坐标较大的那个，忽略平行边
+                ++cnt;
+            }
+        }
+        if ((cnt & 1) == 1) {
+            return PositionalRelationshipEnum.INSIDE;
+        } else {
+            return PositionalRelationshipEnum.EXTERNAL;
+        }
+    }
+
+    /**
+     * 判断点q在凸多边形polygon内
+     * 注意：多边形polygon一定要是凸多边形
+     *
+     * @param polygon 凸多边形
+     * @param q       点
+     * @return true=点q在凸多边形polygon内(包括边上)<br>
+     * false=点q不在凸多边形polygon内
+     */
+    public static boolean insideConvexPolygon(final Polygon polygon, Point q) {
+        Point p = Point.ORIGINAL_POINT;
+        int n = polygon.count();
+        // 寻找一个肯定在多边形 polygon 内的点 p：多边形顶点平均值
+        for (int i = 0; i < n; i++) {
+            p = Point.updatePosition(
+                    p.getX() + polygon.getVertex(i).getX(),
+                    p.getY() + polygon.getVertex(i).getY()
+            );
+        }
+        p = Point.updatePosition(p.getX() / n, p.getY() / n);
+
+        for (int i = 0; i < n; i++) {
+            Segment l = polygon.getEdge(i);
+            if (cross(l.getBegin(), p, l.getEnd()) * cross(l.getBegin(), q, l.getEnd()) < 0) {
+                // 点p和点q在边l的两侧，说明q点肯定在多边形外
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 寻找凸包-graham扫描法
+     *
+     * @param pointSet 点集
+     * @return 返回凸包上的点集，按逆时针方向排列
+     */
+    public static List<Point> findingConvexHulls(List<Point> pointSet) {
+        if (pointSet == null || pointSet.size() < 3) {
+            return pointSet; // 凸包可以是整个点集，如果它小于3个点
+        }
+
+        // 找到y坐标最小的点，如果y相同则选择x最小的点
+        Point p0 = pointSet.get(0);
+        for (Point p : pointSet) {
+            if (p.getY() < p0.getY() || (p.getY() == p0.getY() && p.getX() < p0.getX())) {
+                p0 = p;
+            }
+        }
+
+        // 排序剩余的点
+        List<Point> sortedPoints = new ArrayList<>(pointSet);
+        sortedPoints.remove(p0);
+        Point finalP = p0;
+        sortedPoints.sort((o1, o2) -> {
+            double cp = cross(finalP, o1, o2);
+            int sign = DoubleUtils.sgn(cp);
+            if (sign != 0) {
+                return sign;
+            }
+            return Double.compare(distance(finalP, o1), distance(finalP, o2));
+        });
+
+        // 将起点加回到列表的开始
+        sortedPoints.add(0, p0);
+
+        // Graham扫描法构建凸包
+        List<Point> hull = new ArrayList<>();
+        hull.add(p0);
+        hull.add(sortedPoints.get(1));
+
+        for (int i = 2; i < sortedPoints.size(); i++) {
+            Point p = sortedPoints.get(i);
+            while (hull.size() >= 2 && cross(hull.get(hull.size() - 2), hull.get(hull.size() - 1), p) <= 0) {
+                hull.remove(hull.size() - 1);
+            }
+            hull.add(p);
+        }
+        return hull;
+    }
+
 }
+

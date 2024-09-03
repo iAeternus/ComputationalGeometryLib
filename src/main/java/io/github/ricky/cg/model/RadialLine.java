@@ -9,7 +9,7 @@ import io.github.ricky.cg.constants.MathConstants;
  * @className RadialLine
  * @desc 射线
  */
-public class RadialLine extends Segment {
+public final class RadialLine extends Segment {
 
     public RadialLine(Point begin) {
         super(begin, new Point(MathConstants.INF, MathConstants.INF));

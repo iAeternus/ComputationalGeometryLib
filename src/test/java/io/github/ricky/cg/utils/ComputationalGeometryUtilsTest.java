@@ -1,8 +1,12 @@
 package io.github.ricky.cg.utils;
 
 import io.github.ricky.cg.constants.MathConstants;
+import io.github.ricky.cg.model.Line;
 import io.github.ricky.cg.model.Point;
+import io.github.ricky.cg.model.Polygon;
 import io.github.ricky.cg.model.Segment;
+import io.github.ricky.cg.model.enums.PositionalRelationshipEnum;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -278,11 +282,11 @@ class ComputationalGeometryUtilsTest {
         Segment v5 = new Segment(new Point(6.5, -onePointFiveSqrt3), new Point(9.5, onePointFiveSqrt3));
 
         // When
-        boolean res1 = ComputationalGeometryUtils.isIntersectA(u, v1);
-        boolean res2 = ComputationalGeometryUtils.isIntersectA(u, v2);
-        boolean res3 = ComputationalGeometryUtils.isIntersectA(u, v3);
-        boolean res4 = ComputationalGeometryUtils.isIntersectA(u, v4);
-        boolean res5 = ComputationalGeometryUtils.isIntersectA(u, v5);
+        boolean res1 = ComputationalGeometryUtils.isIntersectExcludingEndpoints(u, v1);
+        boolean res2 = ComputationalGeometryUtils.isIntersectExcludingEndpoints(u, v2);
+        boolean res3 = ComputationalGeometryUtils.isIntersectExcludingEndpoints(u, v3);
+        boolean res4 = ComputationalGeometryUtils.isIntersectExcludingEndpoints(u, v4);
+        boolean res5 = ComputationalGeometryUtils.isIntersectExcludingEndpoints(u, v5);
 
         // Then
         System.out.println(res1);
@@ -307,10 +311,10 @@ class ComputationalGeometryUtilsTest {
         Segment v4 = new Segment(new Point(4, 4), new Point(6, 6)); // 共点且重叠
 
         // When
-        boolean res1 = ComputationalGeometryUtils.isIntersectL(u, v1);
-        boolean res2 = ComputationalGeometryUtils.isIntersectL(u, v2);
-        boolean res3 = ComputationalGeometryUtils.isIntersectL(u, v3);
-        boolean res4 = ComputationalGeometryUtils.isIntersectL(u, v4);
+        boolean res1 = ComputationalGeometryUtils.isCrossingLine(u, v1);
+        boolean res2 = ComputationalGeometryUtils.isCrossingLine(u, v2);
+        boolean res3 = ComputationalGeometryUtils.isCrossingLine(u, v3);
+        boolean res4 = ComputationalGeometryUtils.isCrossingLine(u, v4);
 
         // Then
         System.out.println(res1);
@@ -319,6 +323,115 @@ class ComputationalGeometryUtilsTest {
         System.out.println(res4);
         assertThat(res1).isTrue();
         assertThat(res2).isFalse();
+        assertThat(res3).isTrue();
+        assertThat(res4).isTrue();
+    }
+
+    @Test
+    public void symmetry() {
+        // Given
+        Line l = new Line(2, -4, 9);
+        Point p = new Point(2, 2);
+
+        // When
+        Point symmetry = ComputationalGeometryUtils.symmetry(l, p);
+
+        // Then
+        System.out.println(symmetry);
+        assertThat(symmetry).isEqualTo(new Point(1, 4));
+    }
+
+    @Test
+    @DisplayName("line")
+    public void lineIntersect1() {
+        // Given
+        Line l1 = new Line(Point.ORIGINAL_POINT, new Point(10, 10));
+        Line l2 = new Line(new Point(0, 10), new Point(10, 0));
+        Line l3 = new Line(new Point(0, 1), new Point(10, 11));
+
+        // When
+        Point res1 = ComputationalGeometryUtils.lineIntersect(l1, l2);
+        Point res2 = ComputationalGeometryUtils.lineIntersect(l1, l3);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        assertThat(res1).isEqualTo(new Point(5, 5));
+        assertThat(res2).isNull();
+    }
+
+    @Test
+    @DisplayName("segment")
+    public void lineIntersect2() {
+        // Given
+        Segment l1 = new Segment(Point.ORIGINAL_POINT, new Point(10, 10));
+        Segment l2 = new Segment(new Point(0, 10), new Point(10, 0));
+        Segment l3 = new Segment(new Point(0, 1), new Point(10, 11));
+
+        // When
+        Point res1 = ComputationalGeometryUtils.lineIntersect(l1, l2);
+        Point res2 = ComputationalGeometryUtils.lineIntersect(l1, l3);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        assertThat(res1).isEqualTo(new Point(5, 5));
+        assertThat(res2).isNull();
+    }
+
+    static Polygon polygon = new Polygon(new Point[] {
+            Point.ORIGINAL_POINT,
+            new Point(1, 0),
+            new Point(1, 1),
+            new Point(0, 1),
+    });
+
+    @Test
+    public void positionalRelationship() {
+        // Given
+        Point q1 = new Point(2, 2);
+        Point q2 = new Point(1, 1);
+        Point q3 = new Point(0.5, 1);
+        Point q4 = new Point(0.5, 0.5);
+
+        // When
+        PositionalRelationshipEnum res1 = ComputationalGeometryUtils.positionalRelationship(polygon, q1);
+        PositionalRelationshipEnum res2 = ComputationalGeometryUtils.positionalRelationship(polygon, q2);
+        PositionalRelationshipEnum res3 = ComputationalGeometryUtils.positionalRelationship(polygon, q3);
+        PositionalRelationshipEnum res4 = ComputationalGeometryUtils.positionalRelationship(polygon, q4);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        System.out.println(res3);
+        System.out.println(res4);
+        assertThat(res1).isEqualTo(PositionalRelationshipEnum.EXTERNAL);
+        assertThat(res2).isEqualTo(PositionalRelationshipEnum.ONLINE);
+        assertThat(res3).isEqualTo(PositionalRelationshipEnum.ONLINE);
+        assertThat(res4).isEqualTo(PositionalRelationshipEnum.INSIDE);
+    }
+
+    @Test
+    public void insideConvexPolygon() {
+        // Given
+        Point q1 = new Point(2, 2);
+        Point q2 = new Point(1, 1);
+        Point q3 = new Point(0.5, 1);
+        Point q4 = new Point(0.5, 0.5);
+
+        // When
+        boolean res1 = ComputationalGeometryUtils.insideConvexPolygon(polygon, q1);
+        boolean res2 = ComputationalGeometryUtils.insideConvexPolygon(polygon, q2);
+        boolean res3 = ComputationalGeometryUtils.insideConvexPolygon(polygon, q3);
+        boolean res4 = ComputationalGeometryUtils.insideConvexPolygon(polygon, q4);
+
+        // Then
+        System.out.println(res1);
+        System.out.println(res2);
+        System.out.println(res3);
+        System.out.println(res4);
+        assertThat(res1).isFalse();
+        assertThat(res2).isTrue();
         assertThat(res3).isTrue();
         assertThat(res4).isTrue();
     }
