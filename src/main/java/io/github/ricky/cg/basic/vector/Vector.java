@@ -148,6 +148,7 @@ public interface Vector {
 
     /**
      * 获取自身对应的单位向量
+     *
      * @return 单位向量
      */
     Vector unit();

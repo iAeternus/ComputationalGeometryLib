@@ -1,7 +1,6 @@
 package io.github.ricky.cg.basic.line;
 
 import io.github.ricky.cg.basic.point.Point;
-import io.github.ricky.cg.basic.line.Segment;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,11 +1,10 @@
 package io.github.ricky.cg.common.utils;
 
-import io.github.ricky.cg.common.constants.MathConstants;
 import io.github.ricky.cg.basic.line.GeneralEquationLine;
 import io.github.ricky.cg.basic.line.Line;
-import io.github.ricky.cg.basic.point.Point;
 import io.github.ricky.cg.basic.line.Segment;
-import io.github.ricky.cg.common.utils.ComputationalGeometryUtils;
+import io.github.ricky.cg.basic.point.Point;
+import io.github.ricky.cg.common.constants.MathConstants;
 import io.github.ricky.cg.shape.polygon.Polygon;
 import io.github.ricky.cg.shape.polygon.enums.PositionalRelationshipEnum;
 import org.junit.jupiter.api.DisplayName;

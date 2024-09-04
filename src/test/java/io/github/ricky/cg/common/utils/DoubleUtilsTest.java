@@ -1,7 +1,6 @@
 package io.github.ricky.cg.common.utils;
 
 import io.github.ricky.cg.common.constants.MathConstants;
-import io.github.ricky.cg.common.utils.DoubleUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -55,11 +55,12 @@ public class DoubleUtils {
 
     /**
      * 计算倒数
+     *
      * @param number 浮点数
      * @return 倒数
      */
     public static double reciprocal(double number) {
-        if(number == 0) {
+        if (number == 0) {
             throw new RuntimeException("Divided by 0.");
         }
         return zeroIfNearZero(1.0 / number);

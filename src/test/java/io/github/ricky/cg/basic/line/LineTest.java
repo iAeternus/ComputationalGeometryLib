@@ -1,7 +1,5 @@
 package io.github.ricky.cg.basic.line;
 
-import io.github.ricky.cg.basic.line.GeneralEquationLine;
-import io.github.ricky.cg.basic.line.Line;
 import io.github.ricky.cg.basic.point.Point;
 import org.junit.jupiter.api.Test;
 

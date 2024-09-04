@@ -35,6 +35,7 @@ public final class CenterRadiusCircle implements Circle {
 
     /**
      * 获取圆心
+     *
      * @return 圆心坐标
      */
     @Override
@@ -44,6 +45,7 @@ public final class CenterRadiusCircle implements Circle {
 
     /**
      * 获取半径
+     *
      * @return 半径
      */
     @Override

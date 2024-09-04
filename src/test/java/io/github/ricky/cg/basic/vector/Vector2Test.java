@@ -1,8 +1,6 @@
 package io.github.ricky.cg.basic.vector;
 
 import io.github.ricky.cg.common.constants.MathConstants;
-import io.github.ricky.cg.basic.vector.Vector;
-import io.github.ricky.cg.basic.vector.Vector2;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

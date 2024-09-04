@@ -1,7 +1,6 @@
 package io.github.ricky.cg.shape.polygon;
 
 import io.github.ricky.cg.basic.point.Point;
-import io.github.ricky.cg.shape.polygon.Polygon;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

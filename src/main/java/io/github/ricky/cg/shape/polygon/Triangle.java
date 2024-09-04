@@ -1,10 +1,10 @@
 package io.github.ricky.cg.shape.polygon;
 
 import io.github.ricky.cg.basic.line.Segment;
-import io.github.ricky.cg.common.utils.ComputationalGeometryUtils;
-import io.github.ricky.cg.shape.polygon.enums.ShapeTypeEnum;
-import io.github.ricky.cg.shape.Shape;
 import io.github.ricky.cg.basic.point.Point;
+import io.github.ricky.cg.common.utils.ComputationalGeometryUtils;
+import io.github.ricky.cg.shape.Shape;
+import io.github.ricky.cg.shape.polygon.enums.ShapeTypeEnum;
 
 
 /**
