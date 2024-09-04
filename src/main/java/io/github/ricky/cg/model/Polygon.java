@@ -1,6 +1,7 @@
 package io.github.ricky.cg.model;
 
 import io.github.ricky.cg.model.enums.ShapeTypeEnum;
+import io.github.ricky.cg.utils.ComputationalGeometryUtils;
 import io.github.ricky.cg.utils.DoubleUtils;
 
 /**
@@ -22,6 +23,25 @@ public final class Polygon implements Shape {
             throw new RuntimeException("The polygon has too few vertices.");
         }
         this.vertexes = vertexes;
+    }
+
+    /**
+     * 构造正多边形
+     *
+     * @param sides  边数
+     * @param radius 半径（中心到顶点的距离）
+     * @param center 中心
+     */
+    public Polygon(int sides, double radius, Point center) {
+        this.vertexes = new Point[sides];
+        double angleIncrement = 2 * Math.PI / sides;
+
+        for (int i = 0; i < sides; i++) {
+            double angle = i * angleIncrement;
+            double x = center.getX() + radius * Math.cos(angle);
+            double y = center.getY() + radius * Math.sin(angle);
+            vertexes[i] = new Point(x, y);
+        }
     }
 
     public Point[] getVertexes() {
@@ -140,14 +160,36 @@ public final class Polygon implements Shape {
     /**
      * 求凸多边形的直径<br>
      * 所谓凸多边形的直径，即凸多边形任两个顶点的最大距离。<br>
-     * 下面的算法仅耗时O(n)，是一个优秀的算法。<br>
-     * 输入必须是一个凸多边形，且顶点必须按顺序（顺时针、逆时针均可）依次输入。<br>
-     * 若输入不是凸多边形而是一般点集，则要先求其凸包。<br>
-     * 就是先求出所有跖对，然后求出每个跖对的距离，取最大者。点数要多于5个<br>
      *
      * @return 凸多边形的直径
      */
     public double diameter() {
-        return 0;
+        if (vertexes.length < 2) {
+            throw new IllegalArgumentException("At least two points are needed to define a diameter.");
+        }
+
+        int minIndex = 0;
+        double minX = vertexes[0].getX(), maxX = minX;
+
+        // 找到最左（或最右）的点
+        for (int i = 1; i < vertexes.length; i++) {
+            if (vertexes[i].getX() < minX) {
+                minX = vertexes[i].getX();
+                minIndex = i;
+            } else if (vertexes[i].getX() > maxX) {
+                maxX = vertexes[i].getX();
+            }
+        }
+
+        // 假设minIndex是“最左”点，现在我们需要找到与minIndex构成最大距离的点
+        double maxDistance = 0;
+        for (Point vertex : vertexes) {
+            double distance = ComputationalGeometryUtils.distance(vertexes[minIndex], vertex);
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
+        }
+
+        return maxDistance;
     }
 }

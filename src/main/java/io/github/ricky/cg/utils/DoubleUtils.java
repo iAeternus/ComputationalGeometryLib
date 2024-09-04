@@ -53,4 +53,16 @@ public class DoubleUtils {
         return sgn(number) == 0 ? 0 : number;
     }
 
+    /**
+     * 计算倒数
+     * @param number 浮点数
+     * @return 倒数
+     */
+    public static double reciprocal(double number) {
+        if(number == 0) {
+            throw new RuntimeException("Divided by 0.");
+        }
+        return zeroIfNearZero(1.0 / number);
+    }
+
 }

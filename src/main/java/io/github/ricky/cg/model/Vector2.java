@@ -1,5 +1,6 @@
 package io.github.ricky.cg.model;
 
+import io.github.ricky.cg.constants.MathConstants;
 import io.github.ricky.cg.utils.DoubleUtils;
 
 import java.util.Objects;
@@ -173,6 +174,46 @@ public final class Vector2 implements Vector {
     @Override
     public double sqrModulo() {
         return x * x + y * y;
+    }
+
+    /**
+     * 获取自身对应的单位向量
+     *
+     * @return 单位向量
+     */
+    @Override
+    public Vector unit() {
+        return scalarMultiply(DoubleUtils.reciprocal(modulo()));
+    }
+
+    /**
+     * 求向量的倾斜角的正切<br>
+     * 即相对于x轴的夹角的正切<br>
+     *
+     * @return tan(倾斜角)<br>
+     * 若x轴分量为0，则返回INF<br>
+     * 若y轴分量为0，则返回0<br>
+     */
+    public double tanAlpha() {
+        if (DoubleUtils.sgn(x) == 0) {
+            return MathConstants.INF;
+        }
+        if (DoubleUtils.sgn(y) == 0) {
+            return 0.0;
+        }
+        return y / x;
+    }
+
+    /**
+     * 求向量的倾斜角<br>
+     * 即相对于x轴的夹角<br>
+     *
+     * @return 倾斜角<br>
+     * 若x轴分量为0，则返回PI / 2<br>
+     * 若y轴分量为0，则返回0<br>
+     */
+    public double alpha() {
+        return Math.atan(tanAlpha());
     }
 
     /**

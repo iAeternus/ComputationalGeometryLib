@@ -310,17 +310,6 @@ public class ComputationalGeometryUtils {
     }
 
     /**
-     * 计算两条直线的交点
-     *
-     * @param l1 第一条直线
-     * @param l2 第二条直线
-     * @return 两条直线相交，返回交点，否则返回null
-     */
-    public static Point lineIntersect(Line l1, Line l2) {
-        return l1.lineIntersect(l2);
-    }
-
-    /**
      * 计算两条线段的交点
      *
      * @param l1 第一条线段
@@ -328,9 +317,9 @@ public class ComputationalGeometryUtils {
      * @return 两条线段相交，返回交点，否则返回null
      */
     public static Point lineIntersect(Segment l1, Segment l2) {
-        Line line1 = new Line(l1);
-        Line line2 = new Line(l2);
-        Point point = lineIntersect(line1, line2);
+        Line line1 = new GeneralEquationLine(l1);
+        Line line2 = new GeneralEquationLine(l2);
+        Point point = Line.lineIntersect(line1, line2);
         if (point != null && online(l1, point)) {
             return point;
         }

@@ -147,6 +147,12 @@ public interface Vector {
     double modulo();
 
     /**
+     * 获取自身对应的单位向量
+     * @return 单位向量
+     */
+    Vector unit();
+
+    /**
      * 计算两向量夹角余弦
      *
      * @param v 向量

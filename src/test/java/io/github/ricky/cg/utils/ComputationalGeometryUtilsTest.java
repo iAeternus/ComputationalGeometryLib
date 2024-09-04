@@ -1,10 +1,7 @@
 package io.github.ricky.cg.utils;
 
 import io.github.ricky.cg.constants.MathConstants;
-import io.github.ricky.cg.model.Line;
-import io.github.ricky.cg.model.Point;
-import io.github.ricky.cg.model.Polygon;
-import io.github.ricky.cg.model.Segment;
+import io.github.ricky.cg.model.*;
 import io.github.ricky.cg.model.enums.PositionalRelationshipEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -332,7 +329,7 @@ class ComputationalGeometryUtilsTest {
     @Test
     public void symmetry() {
         // Given
-        Line l = new Line(2, -4, 9);
+        Line l = new GeneralEquationLine(2, -4, 9);
         Point p = new Point(2, 2);
 
         // When
@@ -347,9 +344,9 @@ class ComputationalGeometryUtilsTest {
     @DisplayName("line")
     public void lineIntersect1() {
         // Given
-        Line l1 = new Line(Point.ORIGINAL_POINT, new Point(10, 10));
-        Line l2 = new Line(new Point(0, 10), new Point(10, 0));
-        Line l3 = new Line(new Point(0, 1), new Point(10, 11));
+        Segment l1 = new Segment(Point.ORIGINAL_POINT, new Point(10, 10));
+        Segment l2 = new Segment(new Point(0, 10), new Point(10, 0));
+        Segment l3 = new Segment(new Point(0, 1), new Point(10, 11));
 
         // When
         Point res1 = ComputationalGeometryUtils.lineIntersect(l1, l2);
